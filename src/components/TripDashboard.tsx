@@ -1,7 +1,7 @@
 "use client";
 import { ArrowRight, Bike, Fuel, Gauge, OctagonAlert, Square } from "lucide-react";
 import { Map, ClipboardList, FolderOpen, FileText } from "lucide-react";
-import { TripData } from "@/backend/models/TripModel";
+import type { TripData } from "@/types";
 import WeatherGadget from "@/components/WeatherGadget";
 import HomeCard from "@/components/cards/HomeCard";
 import { Button } from "@/components/ui";

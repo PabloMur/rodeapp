@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { TripData } from "@/backend/models/TripModel";
+import type { TripData } from "@/types";
 
 export const menuAtom = atom({
   key: "menuAtom",

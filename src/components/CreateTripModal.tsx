@@ -5,7 +5,7 @@ import { MapPin, Navigation } from "lucide-react";
 import axios from "axios";
 import { Modal, Input, Select, Button } from "@/components/ui";
 import { useCreateTrip } from "@/hooks";
-import { BikeData } from "@/backend/models/BikeModel";
+import type { BikeData } from "@/types";
 
 interface CreateTripModalProps {
   isOpen: boolean;

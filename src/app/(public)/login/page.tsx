@@ -2,7 +2,6 @@
 import { Bike } from "lucide-react";
 import { useSignin } from "@/hooks";
 import Image from "next/image";
-import google from "../../../public/google.svg";
 
 export default function Login() {
   const signIn = useSignin();
@@ -24,7 +23,7 @@ export default function Login() {
             transition-all shadow-lg"
           onClick={signIn}
         >
-          <Image src={google} alt="Google" width={22} height={22} />
+          <Image src="/google.svg" alt="Google" width={22} height={22} />
           Continuar con Google
         </button>
         <p className="text-zinc-600 text-xs text-center">

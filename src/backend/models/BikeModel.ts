@@ -1,15 +1,6 @@
 import { firestore } from "@/lib/FirebaseConn";
-
-export interface BikeData {
-  id?: string;
-  brand: string;
-  model: string;
-  year: number;
-  displacement: number;
-  tankCapacity: number;
-  fuelEfficiency: number;
-  ownerEmail: string;
-}
+export type { BikeData } from "@/types";
+import type { BikeData } from "@/types";
 
 export class BikeModel {
   static async getByEmail(email: string): Promise<BikeData[]> {

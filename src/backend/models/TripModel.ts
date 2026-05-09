@@ -1,17 +1,6 @@
 import { firestore } from "@/lib/FirebaseConn";
-
-export interface TripData {
-  id?: string;
-  ownerEmail: string;
-  origin: string;
-  destination: string;
-  bikeId: string;
-  bikeName: string;
-  estimatedKm?: number;
-  status: "active" | "completed";
-  startedAt: string;
-  endedAt?: string;
-}
+export type { TripData } from "@/types";
+import type { TripData } from "@/types";
 
 export class TripModel {
   static async getActiveByEmail(email: string): Promise<TripData | null> {

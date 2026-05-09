@@ -27,25 +27,47 @@ interface GeolocationHook {
   error: string | null;
 }
 
+const DEFAULT_COORDS = { latitude: -34.6037, longitude: -58.3816 }; // Buenos Aires
+
 export function useGeolocation(): GeolocationHook {
   const [weatherData, setLocation] = useState<Location | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const weather = (await getWeather(latitude, longitude)) as any;
-          setLocation(weather);
-        },
-        (error) => {
-          setError(error.message);
-        }
-      );
-    } else {
-      setError("Geolocalización no está soportada en este navegador");
+    let cancelled = false;
+
+    const fetchWeather = async (latitude: number, longitude: number) => {
+      const weather = (await getWeather(latitude, longitude)) as any;
+      if (!cancelled) setLocation(weather);
+    };
+
+    // Si el usuario no responde al permiso en 6 segundos, usar coords default
+    const fallbackTimer = setTimeout(() => {
+      if (!cancelled) fetchWeather(DEFAULT_COORDS.latitude, DEFAULT_COORDS.longitude);
+    }, 6000);
+
+    if (!navigator?.geolocation) {
+      clearTimeout(fallbackTimer);
+      fetchWeather(DEFAULT_COORDS.latitude, DEFAULT_COORDS.longitude);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        clearTimeout(fallbackTimer);
+        fetchWeather(position.coords.latitude, position.coords.longitude);
+      },
+      () => {
+        clearTimeout(fallbackTimer);
+        fetchWeather(DEFAULT_COORDS.latitude, DEFAULT_COORDS.longitude);
+      },
+      { timeout: 5000 }
+    );
+
+    return () => {
+      cancelled = true;
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   return { weatherData, error };

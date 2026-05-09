@@ -1,35 +1,69 @@
 "use client";
 import "mapbox-gl/dist/mapbox-gl.css";
-import React, { useRef, useEffect } from "react";
-import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-import { createMap, initGeolocate } from "../lib/Mapbox";
-import { userLocation } from "@/atoms";
+import { useRef, useEffect } from "react";
+import mapboxgl from "mapbox-gl";
 import { useRecoilState } from "recoil";
+import { userLocation } from "@/atoms";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
+const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
+const DEFAULT_CENTER: [number, number] = [-58.3816, -34.6037]; // Buenos Aires
+
+function getPosition(): Promise<[number, number]> {
+  return new Promise((resolve) => {
+    if (!navigator?.geolocation) {
+      resolve(DEFAULT_CENTER);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => resolve([coords.longitude, coords.latitude]),
+      () => resolve(DEFAULT_CENTER),
+      { timeout: 8000 }
+    );
+  });
+}
 
 export default function MapboxNavigation() {
-  let myRef = useRef<HTMLDivElement>(null);
-  const [value, setValue] = useRecoilState(userLocation);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [, setValue] = useRecoilState(userLocation);
 
-  const creteMapAndControls = async () => {
-    const map = (await createMap(myRef.current)) as mapboxgl.Map | null;
-    if (!map) return;
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
 
-    const geolocateControl = await initGeolocate();
-    if (!geolocateControl) return;
+    let map: mapboxgl.Map;
 
-    geolocateControl.on("geolocate", (event: any) => {
-      const { latitude, longitude } = event.coords;
-      setValue({ latitude, longitude });
+    getPosition().then((center) => {
+      if (!containerRef.current) return;
+
+      map = new mapboxgl.Map({
+        container: containerRef.current,
+        style: "mapbox://styles/mapbox/dark-v11",
+        center,
+        zoom: 14,
+        accessToken: TOKEN,
+      });
+
+      mapRef.current = map;
+
+      const geolocate = new mapboxgl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true,
+        showUserHeading: true,
+      });
+
+      geolocate.on("geolocate", (e: any) => {
+        setValue({ latitude: e.coords.latitude, longitude: e.coords.longitude });
+      });
+
+      map.addControl(geolocate);
+      map.addControl(new mapboxgl.NavigationControl());
     });
 
-    map.addControl(geolocateControl);
-    map.addControl(new mapboxgl.NavigationControl());
-  };
-  useEffect(() => {
-    creteMapAndControls();
+    return () => {
+      map?.remove();
+      mapRef.current = null;
+    };
   }, []);
 
-  return <div className="h-full w-full" ref={myRef} />;
+  return <div ref={containerRef} className="h-full w-full" />;
 }

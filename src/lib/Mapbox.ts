@@ -1,49 +1,25 @@
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-mapboxgl.accessToken = process.env.MAPBOX_API_TOKEN as string;
+// Default center: Buenos Aires
+const DEFAULT_CENTER: [number, number] = [-58.3816, -34.6037];
 
-// export const createMap = async (mapContainer: any, lat: any, lng: any) => {
-//   try {
-//     const map = new mapboxgl.Map({
-//       container: mapContainer,
-//       style: "mapbox://styles/polmur/cl8w32dh4001514oxqd9l8aop",
-//       center: [lng, lat],
-//       zoom: 12,
-//       projection: "globe" as any,
-//     });
+const getGeolocation = (): Promise<{ latitude: number; longitude: number }> =>
+  new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve({ latitude: DEFAULT_CENTER[1], longitude: DEFAULT_CENTER[0] });
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude }),
+      () => resolve({ latitude: DEFAULT_CENTER[1], longitude: DEFAULT_CENTER[0] })
+    );
+  });
 
-//     return map;
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
 export const createMap = async (mapContainer: any) => {
   try {
-    const getGeolocation = () => {
-      return new Promise<{ latitude: number; longitude: number }>(
-        (resolve, reject) => {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const { latitude, longitude } = position.coords;
-                resolve({ latitude, longitude });
-              },
-              (error) => {
-                reject(error.message);
-              }
-            );
-          } else {
-            reject("Geolocalización no está soportada en este navegador");
-          }
-        }
-      );
-    };
-
-    // Obtener la ubicación del usuario
     const { latitude, longitude } = await getGeolocation();
 
-    // Crear el mapa con la ubicación del usuario
     const map = new mapboxgl.Map({
       container: mapContainer,
       style: "mapbox://styles/mapbox/dark-v11",
@@ -55,7 +31,6 @@ export const createMap = async (mapContainer: any) => {
     return map;
   } catch (error) {
     console.error(error);
-    // Manejar el error según tus necesidades
     return null;
   }
 };

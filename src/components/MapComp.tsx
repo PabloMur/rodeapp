@@ -13,10 +13,12 @@ export default function MapboxNavigation() {
   const [value, setValue] = useRecoilState(userLocation);
 
   const creteMapAndControls = async () => {
-    let map = (await createMap(myRef.current)) as any;
-    const geolocateControl = await initGeolocate();
+    const map = (await createMap(myRef.current)) as mapboxgl.Map | null;
+    if (!map) return;
 
-    // Maneja eventos cuando la ubicación cambia
+    const geolocateControl = await initGeolocate();
+    if (!geolocateControl) return;
+
     geolocateControl.on("geolocate", (event: any) => {
       const { latitude, longitude } = event.coords;
       setValue({ latitude, longitude });

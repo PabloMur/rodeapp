@@ -7,7 +7,9 @@
       "Bash(npx tsc *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git reset *)"
+      "Bash(git reset *)",
+      "PowerShell(Get-Content \"c:\\\\Users\\\\vdetr\\\\Pablo\\\\rodeapp\\\\.env.local\" | ForEach-Object { \\($_ -split \"=\"\\)[0] })",
+      "PowerShell($content = Get-Content \"c:\\\\Users\\\\vdetr\\\\Pablo\\\\rodeapp\\\\.env.local\"; $content | Where-Object { $_ -match \"MAPBOX\" })"
     ]
   }
 }

@@ -28,13 +28,18 @@ export default function WeatherGadget() {
     );
   }
 
-  const {
-    current: {
-      temp_c,
-      condition: { text: description, icon },
-    },
-    location,
-  } = weatherData as any;
+  const { current, location } = weatherData as any;
+
+  if (!current) {
+    return (
+      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-4 w-full flex items-center gap-3 h-20">
+        <CloudRain size={24} className="text-zinc-400 shrink-0" />
+        <p className="text-zinc-400 text-sm">No se pudo obtener el clima</p>
+      </div>
+    );
+  }
+
+  const { temp_c, condition: { text: description, icon } } = current;
 
   return (
     <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-4 w-full flex items-center justify-between">

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import CustomLayout from "@/components/CustomLayout";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -10,11 +9,7 @@ export const metadata: Metadata = {
   description: "Tu compañero para cada aventura sobre dos ruedas. Rutas, listas, clima y más.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <head>
@@ -22,9 +17,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://img.freepik.com" />
         <link rel="dns-prefetch" href="https://weatherapi-com.p.rapidapi.com" />
       </head>
-      <body className={inter.className}>
-        <CustomLayout>{children}</CustomLayout>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

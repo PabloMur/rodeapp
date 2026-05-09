@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface TestimonialCardProps {
   name: string;
   location: string;
@@ -18,10 +20,12 @@ const TestimonialCard = ({
   return (
     <div className="bg-zinc-900 border border-zinc-700 p-5 rounded-2xl m-3">
       <div className="flex items-center gap-3 mb-4">
-        <img
+        <Image
           src={avatar}
           alt={name}
-          className="w-12 h-12 rounded-full object-cover border-2 border-orange-500"
+          width={48}
+          height={48}
+          className="rounded-full object-cover border-2 border-orange-500"
         />
         <div>
           <h2 className="text-white font-semibold text-base">{name}</h2>

@@ -1,4 +1,11 @@
-import MapboxNavigation from "@/components/MapComp";
+import dynamic from "next/dynamic";
+
+const MapboxNavigation = dynamic(() => import("@/components/MapComp"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-zinc-900 animate-pulse rounded-2xl" />
+  ),
+});
 
 export default function Navigation() {
   return (

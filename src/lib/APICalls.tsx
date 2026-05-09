@@ -9,23 +9,12 @@ export const getWeather = async (
   lat: number,
   lng: number
 ): Promise<ApiResponse<any>> => {
-  const url = `https://weatherapi-com.p.rapidapi.com/current.json?q=${lat}%2C${lng}`;
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "604c4a73bcmsh15c5083584728f9p1678acjsn3f28db565705",
-      "X-RapidAPI-Host": "weatherapi-com.p.rapidapi.com",
-    },
-  };
-
   try {
-    const response: AxiosResponse<any> = await axios.get(url, options);
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error en la llamada API para obtener datos del clima:",
-      error
+    const response: AxiosResponse<any> = await axios.get(
+      `/api/weather?lat=${lat}&lng=${lng}`
     );
+    return response.data;
+  } catch {
     return { data: null, error: "Error al obtener datos del clima" };
   }
 };
@@ -79,8 +68,6 @@ export const APIGetListData = async (id: string) => {
 
 export const APIUpdateListItems = async (id: string, itemsArr: any) => {
   try {
-    console.log(id + " soy el id de la lista");
-
     const response = await axios.put(`/api/list/${id}`, {
       itemsArr,
     });

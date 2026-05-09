@@ -37,8 +37,6 @@ export function useGeolocation(): GeolocationHook {
         async (position) => {
           const { latitude, longitude } = position.coords;
           const weather = (await getWeather(latitude, longitude)) as any;
-          console.log(weather);
-
           setLocation(weather);
         },
         (error) => {
@@ -185,13 +183,14 @@ export function useGetRecentList() {
 
 export function useGetUpdateListItems() {
   const params: any = useParams();
+  const router = useRouter();
   const loaderSetter = useSetRecoilState(loaderAtom);
 
   return async (itemsArr: any) => {
     loaderSetter(true);
     const updateList = await APIUpdateListItems(params.listId, itemsArr);
     loaderSetter(false);
-    window.location.reload();
+    router.refresh();
     return updateList;
   };
 }

@@ -1,8 +1,10 @@
+import dynamic from "next/dynamic";
 import { Bike, Map, ClipboardList, CloudSun, Fuel } from "lucide-react";
-import BenefitsSlider from "@/components/BenefitsSlider";
-import TestimonialCard from "@/components/cards/TestimonialCard";
 import CtaBtn from "@/components/ui/Buttons/CtaBtn";
 import css from "@/styles/home.module.css";
+
+const BenefitsSlider = dynamic(() => import("@/components/BenefitsSlider"), { ssr: false });
+const TestimonialCard = dynamic(() => import("@/components/cards/TestimonialCard"));
 
 export default function Home() {
   return (

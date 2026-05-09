@@ -1,34 +1,37 @@
 "use client";
 import { useCreateList } from "@/hooks";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-//Hacer que el boton de submit sea un componente de ui
+import { useState, KeyboardEvent } from "react";
+import { Input, Button } from "@/components/ui";
 
 export default function ListForm() {
   const { data: session } = useSession();
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
-  const [items, setItems] = useState("");
+  const [itemInput, setItemInput] = useState("");
   const [itemList, setItemList] = useState<string[]>([]);
   const listCreator = useCreateList();
 
   const handleAddItem = () => {
-    console.log(itemList);
-    if (items.trim() !== "") {
-      setItemList([...itemList, items.trim()]);
-      setItems("");
+    if (itemInput.trim()) {
+      setItemList([...itemList, itemInput.trim()]);
+      setItemInput("");
     }
   };
 
-  const handleRemoveItem = (index: any) => {
-    const newItems = [...itemList];
-    newItems.splice(index, 1);
-    setItemList(newItems);
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddItem();
+    }
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const handleRemoveItem = (index: number) => {
+    setItemList(itemList.filter((_, i) => i !== index));
+  };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     await listCreator({
       name,
       category,
@@ -37,94 +40,71 @@ export default function ListForm() {
     });
     setName("");
     setCategory("");
-    setItems("");
+    setItemInput("");
     setItemList([]);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 shadow-md text-orange-500 border-2 border-orange-500 rounded-2xl">
-      <h2 className="text-2xl font-semibold mb-4">Crear Nueva Lista</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-orange-500"
-          >
-            Nombre de la Lista
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="mt-1 p-2 w-full border-2 rounded-md bg-black border-orange-500"
-          />
-        </div>
+    <div className="w-full max-w-md mx-auto">
+      <h2 className="text-2xl font-bold text-white mb-6">Crear nueva lista</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <Input
+          label="Nombre de la lista"
+          placeholder="Ej: Equipo para Córdoba"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
 
-        <div className="mb-4">
-          <label
-            htmlFor="category"
-            className="block text-sm font-medium text-orange-500"
-          >
-            Categoría
-          </label>
-          <input
-            type="text"
-            id="category"
-            name="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="mt-1 p-2 w-full border-2 bg-black border-orange-500 rounded-md"
-          />
-        </div>
+        <Input
+          label="Categoría"
+          placeholder="Ej: Equipamiento, Documentos..."
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
 
-        <div className="mb-4">
-          <label
-            htmlFor="items"
-            className="block text-sm font-medium text-orange-500"
-          >
-            Items
-          </label>
-          <div className="flex">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-zinc-300">Items</label>
+          <div className="flex gap-2">
             <input
               type="text"
-              id="items"
-              name="items"
-              value={items}
-              onChange={(e) => setItems(e.target.value)}
-              className="mt-1 p-2 w-full rounded-l-md border-2 bg-black border-orange-500"
+              value={itemInput}
+              onChange={(e) => setItemInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Agregar item y presionar Enter"
+              className="flex-1 bg-zinc-800 border border-zinc-600 rounded-xl px-3 py-2 text-white
+                placeholder-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
             />
-            <button
-              type="button"
-              className="bg-orange-500 text-black px-4 py-2 rounded-r-md"
-              onClick={handleAddItem}
-            >
-              Agregar
-            </button>
+            <Button type="button" onClick={handleAddItem} size="md">
+              +
+            </Button>
           </div>
-          <ul className="list-disc mt-2 ml-4">
-            {itemList.map((item, index) => (
-              <li key={index} className="flex justify-between items-center">
-                {item}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveItem(index)}
-                  className="text-red-500"
+
+          {itemList.length > 0 && (
+            <ul className="flex flex-col gap-1 mt-1">
+              {itemList.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center bg-zinc-800 border border-zinc-700
+                    px-3 py-2 rounded-xl text-white text-sm"
                 >
-                  Eliminar
-                </button>
-              </li>
-            ))}
-          </ul>
+                  <span>{item}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveItem(index)}
+                    className="text-zinc-500 hover:text-red-400 transition-colors ml-3 text-lg leading-none"
+                  >
+                    ×
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-orange-500 text-black px-4 py-2 rounded-md"
-        >
-          Crear Lista
-        </button>
+        <Button type="submit" fullWidth size="lg" disabled={!name || itemList.length === 0}>
+          Crear lista
+        </Button>
       </form>
     </div>
   );

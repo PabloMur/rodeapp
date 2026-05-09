@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import ListItem from "../ui/ListItem";
 import { useGetListData, useGetUpdateListItems } from "@/hooks";
+import { Button } from "@/components/ui";
 
 export default function UpdateListForm() {
   const getListItems = useGetListData();
-  const [items, setItems] = useState([{ name: "a", status: "incomplete" }]);
+  const [items, setItems] = useState<{ name: string; status: string }[]>([]);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const updateList = useGetUpdateListItems();
 
@@ -20,46 +21,40 @@ export default function UpdateListForm() {
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
-  ): void => {
-    const { checked } = event.target;
-    setCheckedItems((prevCheckedItems) => ({
-      ...prevCheckedItems,
-      [index.toString()]: checked,
+  ) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [index.toString()]: event.target.checked,
     }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Checkboxes seleccionados:", checkedItems);
-
-    // Obtén los índices de los items seleccionados
     const selectedItems = Object.keys(checkedItems)
       .filter((key) => checkedItems[key])
       .map(Number);
-
-    console.log("Índices de los items seleccionados:", selectedItems);
     await updateList(selectedItems);
-    // Realiza la lógica para actualizar la lista con los valores de checkedItems
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        {items.map((item, index) => (
-          <div key={index}>
-            <ListItem
-              index={index.toString()}
-              name={item.name}
-              status={item.status}
-              checked={checkedItems[index.toString()]}
-              onChange={(e: any) => handleCheckboxChange(e, index)}
-            />
-          </div>
-        ))}
-        <button className="w-full text-orange-500 text-xl font-bold border-2 rounded-xl border-orange-500 p-3">
-          Actualizar
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      {items.map((item, index) => (
+        <ListItem
+          key={index}
+          index={index.toString()}
+          name={item.name}
+          status={item.status}
+          checked={checkedItems[index.toString()] ?? false}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleCheckboxChange(e, index)
+          }
+        />
+      ))}
+      {items.length > 0 && (
+        <Button type="submit" fullWidth size="lg" className="mt-2">
+          Guardar cambios
+        </Button>
+      )}
+    </form>
   );
 }

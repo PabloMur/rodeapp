@@ -1,47 +1,40 @@
 "use client";
 import DeleteListBtn from "@/components/ui/Buttons/DeleteListBtn";
-import ListItem from "@/components/ui/ListItem";
-import { useGetListData } from "@/hooks";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import DeleteListModal from "@/components/modals/DeleteListModal";
 import Loader from "@/components/ui/Loader";
 import UpdateListForm from "@/components/forms/UpdateList";
-
-//recordar que esto es una pagina, por lo que se deben migrar todos estos mecanismos a su respectiva representacion como componentes
+import { useGetListData } from "@/hooks";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui";
 
 export default function ListDetailsPage() {
-  const [listData, setListData] = useState<any>({});
+  const [listData, setListData] = useState<any>(null);
   const listDataGetter = useGetListData();
 
-  const getListData = async () => {
-    try {
-      const result = await listDataGetter();
-      setListData(result);
-    } catch (error) {
-      console.error("Error al obtener datos de la lista:", error);
-    }
-  };
-
   useEffect(() => {
-    getListData();
+    listDataGetter()
+      .then((result) => setListData(result))
+      .catch(() => {});
   }, []);
 
+  const name = listData?.data?.listData?.name;
+  const category = listData?.data?.listData?.category;
+
   return (
-    <div className="p-2 relative min-h-[90vh]">
-      <DeleteListModal></DeleteListModal>
-      <DeleteListBtn></DeleteListBtn>
-      <Loader></Loader>
-      <div className="flex flex-col justify-center items-center mb-2">
-        <p className="text-orange-500">Titulo</p>
-        <h2 className="text-2xl">{listData?.data?.listData?.name}</h2>
+    <div className="min-h-[88vh] bg-black p-4 flex flex-col gap-4 relative">
+      <DeleteListModal />
+      <Loader />
+
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold text-white">{name ?? "Cargando..."}</h1>
+          {category && <Badge status="orange" label={category} className="mt-1" />}
+        </div>
+        <DeleteListBtn />
       </div>
-      <div className="flex flex-col justify-center items-center">
-        <p className="text-orange-500 text-sm">Categoria</p>
-        <h3 className="text-xl">{listData?.data?.listData?.category}</h3>
-      </div>
-      <div className="p-2">
-        <UpdateListForm></UpdateListForm>
+
+      <div className="flex flex-col gap-2 mt-2">
+        <UpdateListForm />
       </div>
     </div>
   );

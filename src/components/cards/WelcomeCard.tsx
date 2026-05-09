@@ -1,21 +1,26 @@
 "use client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+
 export default function WelcomeCard() {
   const { data: session } = useSession();
   return (
-    <div className="border-2 border-orange-500 rounded-2xl p-4 w-full flex justify-between items-center text-orange-500">
-      <h2>Welcome</h2>
-      <div className=" flex justify-center items-center gap-3">
-        <h2>{session?.user?.name}</h2>
-        <Image
-          src={session?.user?.image as string}
-          alt="imagen de cuenta de google del usuario"
-          height={30}
-          width={30}
-          className="rounded-full"
-        ></Image>
+    <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-4 w-full flex justify-between items-center">
+      <div>
+        <p className="text-zinc-400 text-sm">Bienvenido de vuelta</p>
+        <h2 className="text-white font-bold text-lg">
+          {session?.user?.name ?? "Motoviajero"}
+        </h2>
       </div>
+      {session?.user?.image && (
+        <Image
+          src={session.user.image}
+          alt="avatar"
+          height={44}
+          width={44}
+          className="rounded-full border-2 border-orange-500"
+        />
+      )}
     </div>
   );
 }

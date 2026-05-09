@@ -1,14 +1,12 @@
+"use client";
 import { useMenuLi } from "@/hooks";
 
-export default function ManuLiBtn({ route, content }: any) {
+export default function MenuLiBtn({ route, content }: { route: string; content: string }) {
   const menuLiHook = useMenuLi();
-  const handleClick = () => {
-    menuLiHook(route);
-  };
   return (
     <button
-      className="text-black rounded-full border border-black p-3 m-1 w-[90%]"
-      onClick={handleClick}
+      className="w-full text-left text-black font-semibold py-3 px-4 rounded-xl hover:bg-black/10 active:bg-black/20 transition-colors text-base"
+      onClick={() => menuLiHook(route)}
     >
       {content}
     </button>

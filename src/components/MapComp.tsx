@@ -5,8 +5,7 @@ import { createMap, initGeolocate } from "../lib/Mapbox";
 import { userLocation } from "@/atoms";
 import { useRecoilState } from "recoil";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoicG9sbXVyIiwiYSI6ImNsYWc0ejh0eTFhYTEzcXBlNGh4N3p6eGgifQ.J7CA9nlTGPzjWhdDW1QFvA";
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
 export default function MapboxNavigation() {
   let myRef = useRef<HTMLDivElement>(null);
@@ -29,7 +28,5 @@ export default function MapboxNavigation() {
     creteMapAndControls();
   }, []);
 
-  return (
-    <div className="h-[80vh] w-[90%]  relative rounded-xl" ref={myRef}></div>
-  );
+  return <div className="h-full w-full" ref={myRef} />;
 }

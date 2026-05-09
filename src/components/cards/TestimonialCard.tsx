@@ -1,3 +1,12 @@
+interface TestimonialCardProps {
+  name: string;
+  location: string;
+  rating: number;
+  testimonial: string;
+  date: string;
+  avatar: string;
+}
+
 const TestimonialCard = ({
   name,
   location,
@@ -5,24 +14,29 @@ const TestimonialCard = ({
   testimonial,
   date,
   avatar,
-}: any) => {
+}: TestimonialCardProps) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md m-2">
-      <div className="flex items-center mb-4">
-        <img src={avatar} alt={name} className="w-12 h-12 rounded-full mr-4" />
+    <div className="bg-zinc-900 border border-zinc-700 p-5 rounded-2xl m-3">
+      <div className="flex items-center gap-3 mb-4">
+        <img
+          src={avatar}
+          alt={name}
+          className="w-12 h-12 rounded-full object-cover border-2 border-orange-500"
+        />
         <div>
-          <h2 className="text-lg font-semibold">{name}</h2>
-          <p className="text-gray-500">{location}</p>
+          <h2 className="text-white font-semibold text-base">{name}</h2>
+          <p className="text-zinc-500 text-sm">{location}</p>
         </div>
       </div>
-      <div className="mb-4">
-        <div className="flex items-center mb-2">
-          <span className="text-yellow-500">★</span>
-          <span className="text-gray-700 ml-2">{rating}</span>
-        </div>
-        <p className="text-gray-800">{testimonial}</p>
+      <div className="flex gap-0.5 mb-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span key={i} className={i < rating ? "text-orange-500" : "text-zinc-700"}>
+            ★
+          </span>
+        ))}
       </div>
-      <div className="text-gray-500 text-sm">{date}</div>
+      <p className="text-zinc-300 text-sm leading-relaxed">{testimonial}</p>
+      <p className="text-zinc-600 text-xs mt-3">{date}</p>
     </div>
   );
 };

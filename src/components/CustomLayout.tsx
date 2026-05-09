@@ -3,16 +3,17 @@ import { RecoilRoot } from "recoil";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 import Providers from "@/app/Providers";
+import { ReactNode } from "react";
 
-export default function CustomLayout({ children }: any) {
+export default function CustomLayout({ children }: { children: ReactNode }) {
   return (
     <Providers>
       <RecoilRoot>
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-black flex flex-col">
           <Navbar />
-          {children}
+          <main className="flex-1">{children}</main>
+          <Footer />
         </div>
-        <Footer />
       </RecoilRoot>
     </Providers>
   );

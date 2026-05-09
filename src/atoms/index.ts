@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { TripData } from "@/backend/models/TripModel";
 
 export const menuAtom = atom({
   key: "menuAtom",
@@ -22,5 +23,15 @@ export const lastListID = atom({
 
 export const deleteListModal = atom({
   key: "deleteListModal",
+  default: false,
+});
+
+export const activeTripAtom = atom<TripData | null>({
+  key: "activeTripAtom",
+  default: null,
+});
+
+export const createTripModalAtom = atom({
+  key: "createTripModalAtom",
   default: false,
 });

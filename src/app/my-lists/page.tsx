@@ -1,46 +1,57 @@
 "use client";
+import { ClipboardList } from "lucide-react";
 import MiniList from "@/components/MiniList";
 import { useGetUserList } from "@/hooks";
 import { useEffect, useState } from "react";
 import Loader from "@/components/ui/Loader";
+import { PageHeader, EmptyState, Button } from "@/components/ui";
+import { useGoTo } from "@/hooks";
 
-// Componente MyListPage
 export default function MyListPage() {
-  // Utiliza el hook correcto
   const getUserLists = useGetUserList();
+  const goto = useGoTo();
+  const [lists, setLists] = useState<{ id: string; name: string }[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
-  // Estado para almacenar las listas
-  const [lists, setLists] = useState([]);
-
-  // useEffect con una función de retorno para evitar el bucle infinito
   useEffect(() => {
-    // Función asincrónica para obtener las listas del usuario
     const fetchData = async () => {
       try {
-        // Llama al hook para obtener las listas
         const response = await getUserLists();
-
-        // Actualiza el estado con las listas obtenidas
         setLists(response.data.lists || []);
-      } catch (error) {
-        console.error("Error al obtener las listas:", error);
-        // Maneja el error según tus necesidades
+      } finally {
+        setLoaded(true);
       }
     };
-
-    // Llama a la función asincrónica
     fetchData();
-  }, []); // Pasa un arreglo vacío como dependencia para ejecutar el efecto solo una vez
+  }, []);
 
-  // Renderiza el componente
   return (
-    <div className="flex flex-col justify-center items-center p-4 relative">
-      <h2 className="text-orange-500 text-2xl m-4">Mis Listas</h2>
-      <Loader></Loader>
-      {Array.isArray(lists) &&
-        lists.map((list: any) => (
-          <MiniList key={list.id} id={list.id} title={list.name} />
-        ))}
+    <div className="min-h-[88vh] bg-black p-4 flex flex-col gap-4 relative">
+      <Loader />
+      <PageHeader
+        title="Mis Listas"
+        subtitle="Todas tus listas de viaje"
+        action={
+          <Button size="sm" onClick={() => goto("/lists")}>
+            + Nueva
+          </Button>
+        }
+      />
+
+      {loaded && lists.length === 0 ? (
+        <EmptyState
+          icon={<ClipboardList size={56} />}
+          title="Sin listas aún"
+          description="Creá tu primera lista de verificación para organizar tu próximo viaje."
+          action={<Button onClick={() => goto("/lists")}>Crear lista</Button>}
+        />
+      ) : (
+        <div className="flex flex-col gap-2">
+          {lists.map((list) => (
+            <MiniList key={list.id} id={list.id} title={list.name} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

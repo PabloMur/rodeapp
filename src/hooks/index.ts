@@ -1,5 +1,6 @@
 import { useParams, useRouter } from "next/navigation";
 import { deleteListModal, lastListID, loaderAtom, menuAtom } from "@/atoms";
+
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -7,10 +8,14 @@ import {
   APIDeleteList,
   APIGetListData,
   APIUpdateListItems,
+  APIGetActiveTrip,
+  APICreateTrip,
+  APIEndTrip,
   createList,
   getUserLists,
   getWeather,
 } from "@/lib/APICalls";
+import { activeTripAtom, createTripModalAtom } from "@/atoms";
 
 interface Location {
   latitude: any;
@@ -200,5 +205,59 @@ export function useDeleteList() {
     await APIDeleteList(listID);
     loaderSetter(false);
     goto("/home");
+  };
+}
+
+export function useActiveTrip() {
+  const { data: session } = useSession();
+  const [activeTrip, setActiveTrip] = useRecoilState(activeTripAtom);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const email = session?.user?.email;
+    if (!email) { setLoading(false); return; }
+    APIGetActiveTrip(email).then(({ data }) => {
+      setActiveTrip(data ?? null);
+      setLoading(false);
+    });
+  }, [session]);
+
+  return { activeTrip, loading };
+}
+
+export function useCreateTrip() {
+  const { data: session } = useSession();
+  const setActiveTrip = useSetRecoilState(activeTripAtom);
+  const setModal = useSetRecoilState(createTripModalAtom);
+  const loaderSetter = useSetRecoilState(loaderAtom);
+
+  return async (tripData: {
+    origin: string;
+    destination: string;
+    bikeId: string;
+    bikeName: string;
+    estimatedKm?: number;
+  }) => {
+    const email = session?.user?.email || "";
+    loaderSetter(true);
+    const { data } = await APICreateTrip({ ...tripData, ownerEmail: email });
+    loaderSetter(false);
+    if (data) {
+      setActiveTrip(data);
+      setModal(false);
+    }
+  };
+}
+
+export function useEndTrip() {
+  const [activeTrip, setActiveTrip] = useRecoilState(activeTripAtom);
+  const loaderSetter = useSetRecoilState(loaderAtom);
+
+  return async () => {
+    if (!activeTrip?.id) return;
+    loaderSetter(true);
+    await APIEndTrip(activeTrip.id);
+    loaderSetter(false);
+    setActiveTrip(null);
   };
 }

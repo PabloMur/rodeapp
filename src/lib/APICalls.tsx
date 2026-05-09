@@ -91,6 +91,33 @@ export const APIUpdateListItems = async (id: string, itemsArr: any) => {
   }
 };
 
+export const APIGetActiveTrip = async (email: string) => {
+  try {
+    const response = await axios.get(`/api/trip?email=${email}`);
+    return { data: response.data.trip };
+  } catch {
+    return { data: null, error: "Error al obtener el viaje activo" };
+  }
+};
+
+export const APICreateTrip = async (tripData: any) => {
+  try {
+    const response = await axios.post("/api/trip", tripData);
+    return { data: response.data.trip };
+  } catch {
+    return { data: null, error: "Error al crear el viaje" };
+  }
+};
+
+export const APIEndTrip = async (id: string) => {
+  try {
+    const response = await axios.put(`/api/trip/${id}`);
+    return { data: response.data };
+  } catch {
+    return { data: null, error: "Error al terminar el viaje" };
+  }
+};
+
 export const APIDeleteList = async (id: string) => {
   try {
     const response = await axios.delete(`/api/list/${id}`);

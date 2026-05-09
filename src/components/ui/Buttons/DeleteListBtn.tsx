@@ -1,20 +1,15 @@
+"use client";
 import { deleteListModal } from "@/atoms";
-import { useDeleteList } from "@/hooks";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
+import { Button } from "@/components/ui";
 
 export default function DeleteListBtn() {
-  const [modalState, modaleSetter] = useRecoilState(deleteListModal);
-
+  const [, setModal] = useRecoilState(deleteListModal);
   return (
-    <div className="p-2 flex justify-end items-center">
-      <button
-        className="text-red-500 p-2 border rounded-xl border-red-500"
-        onClick={() => {
-          modaleSetter(!modalState);
-        }}
-      >
+    <div className="flex justify-end">
+      <Button variant="danger" size="sm" onClick={() => setModal(true)}>
         Eliminar lista
-      </button>
+      </Button>
     </div>
   );
 }

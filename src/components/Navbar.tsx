@@ -10,10 +10,14 @@ export default function Navbar() {
       <BurguerBtn></BurguerBtn>
       <ManuDesplegable>
         <MenuLiBtn route={"/"} content={"Inicio"}></MenuLiBtn>
-        <MenuLiBtn route={"/lists"} content={"Crear Lista"}></MenuLiBtn>
+        <MenuLiBtn route={"/home"} content={"Panel"}></MenuLiBtn>
         <MenuLiBtn route={"/my-lists"} content={"Mis Listas"}></MenuLiBtn>
-        <MenuLiBtn route={"/profile"} content={"Perfil"}></MenuLiBtn>
+        <MenuLiBtn route={"/lists"} content={"Crear Lista"}></MenuLiBtn>
+        <MenuLiBtn route={"/my-bikes"} content={"Mis Motos"}></MenuLiBtn>
+        <MenuLiBtn route={"/calculator"} content={"Calculadora"}></MenuLiBtn>
         <MenuLiBtn route={"/navigation"} content={"Navegar"}></MenuLiBtn>
+        <MenuLiBtn route={"/messagges"} content={"Notas"}></MenuLiBtn>
+        <MenuLiBtn route={"/profile"} content={"Perfil"}></MenuLiBtn>
         <SignoutBtn></SignoutBtn>
       </ManuDesplegable>
     </nav>

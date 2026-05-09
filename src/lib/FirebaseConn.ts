@@ -1,6 +1,10 @@
 import * as admin from "firebase-admin";
 
-const serviceAccount = JSON.parse(process.env.FIRESTORE_API_KEY as any);
+if (!process.env.FIRESTORE_API_KEY) {
+  throw new Error("FIRESTORE_API_KEY is not set in environment variables");
+}
+
+const serviceAccount = JSON.parse(process.env.FIRESTORE_API_KEY);
 
 admin.apps.length
   ? admin.app()

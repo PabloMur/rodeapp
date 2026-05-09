@@ -46,7 +46,7 @@ export const createMap = async (mapContainer: any) => {
     // Crear el mapa con la ubicación del usuario
     const map = new mapboxgl.Map({
       container: mapContainer,
-      style: "mapbox://styles/polmur/clrw7kuyn011m01qs6cun4lmg",
+      style: "mapbox://styles/mapbox/dark-v11",
       center: [longitude, latitude],
       zoom: 14,
       projection: "globe" as any,

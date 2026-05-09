@@ -2,24 +2,9 @@
 import { ReactNode } from "react";
 import { SessionProvider } from "next-auth/react";
 
-// TEMPORAL: sesión mockeada para desarrollo sin OAuth configurado
-// Para restaurar: eliminar mockSession y el prop session={mockSession}
-const mockSession = {
-  user: {
-    name: "Dev User",
-    email: "dev@test.com",
-    image: "https://ui-avatars.com/api/?name=Dev+User",
-  },
-  expires: "2099-12-31",
-};
-
-interface ProvidersProps {
-  children: ReactNode;
-}
-
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <SessionProvider session={mockSession} refetchOnWindowFocus={false} refetchInterval={0}>
+    <SessionProvider refetchOnWindowFocus={false}>
       {children}
     </SessionProvider>
   );

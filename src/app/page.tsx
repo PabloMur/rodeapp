@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { Bike, Map, ClipboardList, CloudSun, Fuel } from "lucide-react";
 import CtaBtn from "@/components/ui/Buttons/CtaBtn";
-import css from "@/styles/home.module.css";
 
 const BenefitsSlider = dynamic(() => import("@/components/BenefitsSlider"), { ssr: false });
 const TestimonialCard = dynamic(() => import("@/components/cards/TestimonialCard"));
@@ -10,9 +10,16 @@ export default function Home() {
   return (
     <div className="bg-black">
       {/* Hero */}
-      <section
-        className={`${css.mainContainer} relative flex flex-col justify-center items-center min-h-[88vh] w-full`}
-      >
+      <section className="relative flex flex-col justify-center items-center min-h-[88vh] w-full overflow-hidden">
+        <Image
+          src="/backgroundHome2.jpg"
+          alt=""
+          fill
+          priority
+          quality={80}
+          className="object-cover object-center"
+          sizes="100vw"
+        />
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center gap-4 px-6 text-center">
           <Bike size={72} className="text-orange-500" />

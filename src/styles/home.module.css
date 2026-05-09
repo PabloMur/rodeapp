@@ -1,6 +1,1 @@
-.mainContainer {
-  background-image: url("/backgroundHome2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+/* Hero background moved to next/image in page.tsx for optimization */

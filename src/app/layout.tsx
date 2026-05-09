@@ -2,14 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import CustomLayout from "@/components/CustomLayout";
-import "mapbox-gl/dist/mapbox-gl.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "RodeApp",
-  description:
-    "Modulo 11 | Carrera de Desarrollo Web FullStack | Apx | Nextjs | Typescript | Firebase",
+  description: "Tu compañero para cada aventura sobre dos ruedas. Rutas, listas, clima y más.",
 };
 
 export default function RootLayout({
@@ -18,7 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="es">
+      <head>
+        <link rel="preconnect" href="https://cdn.weatherapi.com" />
+        <link rel="preconnect" href="https://img.freepik.com" />
+        <link rel="dns-prefetch" href="https://weatherapi-com.p.rapidapi.com" />
+      </head>
       <body className={inter.className}>
         <CustomLayout>{children}</CustomLayout>
       </body>

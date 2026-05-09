@@ -25,6 +25,7 @@ const TestimonialCard = ({
           alt={name}
           width={48}
           height={48}
+          loading="lazy"
           className="rounded-full object-cover border-2 border-orange-500"
         />
         <div>

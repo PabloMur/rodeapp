@@ -49,6 +49,8 @@ export default function Notes() {
     try {
       const res = await axios.get(`/api/note?email=${email}`);
       setNotes(res.data.notes || []);
+    } catch {
+      setNotes([]);
     } finally {
       setLoading(false);
     }
@@ -66,14 +68,17 @@ export default function Notes() {
       setModalOpen(false);
       setForm(emptyForm);
       fetchNotes();
+    } catch {
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    await axios.delete(`/api/note/${id}`);
-    setNotes((prev) => prev.filter((n) => n.id !== id));
+    try {
+      await axios.delete(`/api/note/${id}`);
+      setNotes((prev) => prev.filter((n) => n.id !== id));
+    } catch {}
   }
 
   return (

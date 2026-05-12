@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["mapbox-gl"],
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

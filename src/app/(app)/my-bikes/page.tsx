@@ -46,6 +46,8 @@ export default function MyBikes() {
     try {
       const res = await axios.get(`/api/bike?email=${email}`);
       setBikes(res.data.bikes || []);
+    } catch {
+      setBikes([]);
     } finally {
       setLoading(false);
     }
@@ -63,14 +65,17 @@ export default function MyBikes() {
       setModalOpen(false);
       setForm(emptyForm);
       fetchBikes();
+    } catch {
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    await axios.delete(`/api/bike/${id}`);
-    setBikes((prev) => prev.filter((b) => b.id !== id));
+    try {
+      await axios.delete(`/api/bike/${id}`);
+      setBikes((prev) => prev.filter((b) => b.id !== id));
+    } catch {}
   }
 
   return (

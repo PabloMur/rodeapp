@@ -23,9 +23,10 @@ export default function CreateTripModal({ isOpen, onClose }: CreateTripModalProp
 
   useEffect(() => {
     if (!isOpen || !session?.user?.email) return;
-    axios.get(`/api/bike?email=${session.user.email}`).then((res) => {
-      setBikes(res.data.bikes || []);
-    });
+    axios
+      .get(`/api/bike?email=${session.user.email}`)
+      .then((res) => setBikes(res.data.bikes || []))
+      .catch(() => setBikes([]));
   }, [isOpen, session]);
 
   const bikeOptions = bikes.map((b) => ({

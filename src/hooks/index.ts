@@ -15,7 +15,7 @@ import {
   getUserLists,
   getWeather,
 } from "@/lib/APICalls";
-import { activeTripAtom, createTripModalAtom } from "@/atoms";
+import { activeTripAtom, createTripModalAtom, lastCompletedTripAtom } from "@/atoms";
 
 interface Location {
   latitude: any;
@@ -27,7 +27,7 @@ interface GeolocationHook {
   error: string | null;
 }
 
-const DEFAULT_COORDS = { latitude: -34.6037, longitude: -58.3816 }; // Buenos Aires
+const DEFAULT_COORDS = { latitude: -34.6037, longitude: -58.3816 };
 
 export function useGeolocation(): GeolocationHook {
   const [weatherData, setLocation] = useState<Location | null>(null);
@@ -41,7 +41,6 @@ export function useGeolocation(): GeolocationHook {
       if (!cancelled) setLocation(weather);
     };
 
-    // Si el usuario no responde al permiso en 6 segundos, usar coords default
     const fallbackTimer = setTimeout(() => {
       if (!cancelled) fetchWeather(DEFAULT_COORDS.latitude, DEFAULT_COORDS.longitude);
     }, 6000);
@@ -136,7 +135,6 @@ export function useCTA() {
 }
 
 export function useSignin() {
-  //Este hook es para iniciar sesion
   return async () => {
     await signIn("google", {
       callbackUrl: `${process.env.NEXT_PUBLIC_ENV}/home`,
@@ -182,7 +180,6 @@ export function useMiniList() {
   };
 }
 
-//this hooks give us the data of a list in particular
 export function useGetListData() {
   const loaderSetter = useSetRecoilState(loaderAtom);
   const params: any = useParams();
@@ -250,6 +247,7 @@ export function useCreateTrip() {
   const { data: session } = useSession();
   const setActiveTrip = useSetRecoilState(activeTripAtom);
   const setModal = useSetRecoilState(createTripModalAtom);
+  const setLastCompleted = useSetRecoilState(lastCompletedTripAtom);
   const loaderSetter = useSetRecoilState(loaderAtom);
 
   return async (tripData: {
@@ -264,6 +262,7 @@ export function useCreateTrip() {
     const { data } = await APICreateTrip({ ...tripData, ownerEmail: email });
     loaderSetter(false);
     if (data) {
+      setLastCompleted(null);
       setActiveTrip(data);
       setModal(false);
     }
@@ -272,6 +271,7 @@ export function useCreateTrip() {
 
 export function useEndTrip() {
   const [activeTrip, setActiveTrip] = useRecoilState(activeTripAtom);
+  const setLastCompleted = useSetRecoilState(lastCompletedTripAtom);
   const loaderSetter = useSetRecoilState(loaderAtom);
 
   return async () => {
@@ -279,6 +279,7 @@ export function useEndTrip() {
     loaderSetter(true);
     await APIEndTrip(activeTrip.id);
     loaderSetter(false);
+    setLastCompleted({ ...activeTrip, status: "completed", endedAt: new Date().toISOString() });
     setActiveTrip(null);
   };
 }

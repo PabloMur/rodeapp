@@ -12,7 +12,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative flex flex-col justify-center items-center min-h-[88vh] w-full overflow-hidden">
         <Image
-          src="/backgroundHome2.jpg"
+          src="/fondo.png"
           alt=""
           fill
           priority
